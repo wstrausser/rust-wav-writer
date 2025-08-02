@@ -1,0 +1,1 @@
+Code in this repo is a Rust implementation of the program featured in Akash Murthy's video ["Write a WAV file from scratch - C++ Audio Programming](https://www.youtube.com/watch?v=qqjvB_VxMRM). The program writes a .wav file from scratch without any additional dependencies.
