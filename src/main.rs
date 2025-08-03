@@ -37,6 +37,41 @@ impl SineOscillator {
     }
 }
 
+#[derive(Debug)]
+struct SawOscillator {
+    amplitude: f64,
+    index: f64,
+    increment: f64,
+    cycle_counter: i128,
+}
+
+impl SawOscillator {
+    fn new(frequency: f64, amplitude: f64) -> SawOscillator {
+        SawOscillator {
+            amplitude: amplitude,
+            index: 0.0,
+            increment: frequency / SAMPLE_RATE as f64,
+            cycle_counter: 0,
+        }
+    }
+
+    fn sample(self: &mut Self) -> f64 {
+         let mut sample = -self.amplitude + self.index;
+
+         if sample > self.amplitude {
+            sample = -self.amplitude;
+            self.index = self.increment;
+         }
+         else {
+            self.index += self.increment;
+         }
+
+         self.cycle_counter += 1;
+
+         return sample
+    }
+}
+
 fn scale_to_bit_depth(sample: f64) -> i16 {
     let base: i64 = 2;
     let max_amplitude = base.pow(BIT_DEPTH as u32 - 1) - 1;
@@ -55,8 +90,10 @@ fn write_4_bytes(file: &mut File, val: i32) {
 }
 
 fn main() {
-    let mut oscillator = SineOscillator::new(220.0, 0.5);
-    let duration = 1000.0;
+    // let mut oscillator = SineOscillator::new(440.0, 0.5);
+    let mut oscillator = SawOscillator::new(880.0, 0.5);
+
+    let duration = 2.0;
     let path = Path::new("waveform.wav");
 
     let mut file = File::create(path).unwrap();
